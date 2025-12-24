@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo QR Code</title>
+    <script>
+        function generateQRCode(event) {
+            event.preventDefault(); // Ngăn chặn gửi form mặc định
+
+            const data = document.getElementById('data').value;
+            const size = document.getElementById('size').value;
+            const border = document.getElementById('border').value;
+            // Tạo URL với query parameters
+            const url = `/generate?data=${encodeURIComponent(data)}&size=${size}&border=${border}`;
+
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const imgURL = URL.createObjectURL(blob);
+                    document.getElementById('qrcode').src = imgURL; // Cập nhật src của img
+                    document.getElementById('qrcode').style.display = 'block'; // Hiện ảnh
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Tạo QR Code</h1>
+    <form onsubmit="generateQRCode(event)">
+        <label for="data">Chuỗi dữ liệu:</label>
+        <input type="text" id="data" name="data" required>
+        <br><br>
+        <label for="size">Kích thước (px):</label>
+        <input type="number" id="size" name="size" value="300" required>
+        <br><br>
+        <input type="submit" value="Tạo QR Code">
+    </form>
+    <br>
+    <img id="qrcode" alt="QR Code sẽ xuất hiện ở đây" style="display:none;"/>
+</body>
+</html>
